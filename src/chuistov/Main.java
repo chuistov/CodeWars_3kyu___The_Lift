@@ -63,7 +63,7 @@ public class Main {
             new int[0], // 5
         };
         final int[][] queues = {
-            new int[0], // G
+            new int[]{3}, // G
             new int[]{4, 4, 4, 4, 4, 2}, // 1
             new int[0], // 2
             new int[0], // 3

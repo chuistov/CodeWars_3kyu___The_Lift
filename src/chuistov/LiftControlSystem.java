@@ -22,7 +22,7 @@ public class LiftControlSystem {
     upList = new ArrayList<>();
     downList = new ArrayList<>();
     for(var passenger : passengers)
-      if(passenger.isMovingUp()) upList.add(passenger);
+      if(passenger.targetFloor() > passenger.startingFloor()) upList.add(passenger);
       else downList.add(passenger);
 //    Collections.reverse(downList); // reversing this list by the first member (startingFloor)
     System.out.println("up list: " + upList);
@@ -96,15 +96,15 @@ public class LiftControlSystem {
     if(direction.equals("up")) {
       result = maxFloor;
       for(var passenger : upList)
-        if(passenger.getStartingFloor() < result)
-          result = passenger.getStartingFloor();
+        if(passenger.startingFloor() < result)
+          result = passenger.startingFloor();
       return result;
     }
 
     result = 0;
     for(var passenger : downList)
-      if(passenger.getStartingFloor() > result)
-        result = passenger.getStartingFloor();
+      if(passenger.startingFloor() > result)
+        result = passenger.startingFloor();
     return result;
   }
 
@@ -117,13 +117,13 @@ public class LiftControlSystem {
 
     // If lift is going up and any passengers are waiting upstairs return true
     if(lift.isMovingUp() && upList.stream()
-        .mapToInt(x -> x.getStartingFloor())
+        .mapToInt(x -> x.startingFloor())
         .anyMatch(x -> x > lift.getCurrentFloor()))
       return true;
 
     // if lift is going down and any passengers are waiting downstairs return true
     if(!lift.isMovingUp() && downList.stream()
-        .mapToInt(x -> x.getStartingFloor())
+        .mapToInt(x -> x.startingFloor())
         .anyMatch(x -> x < lift.getCurrentFloor()))
       return true;
 
@@ -140,7 +140,7 @@ public class LiftControlSystem {
     // Defining the closest floor where the lift should drop passengers
     if(!lift.getPassengers().isEmpty()) {
       List<Integer> floorsToLeave = lift.getPassengers().stream()
-          .mapToInt(x -> x.getTargetFloor())
+          .mapToInt(x -> x.targetFloor())
           // Considering only those passengers whose target floor is higher
           // or lower than the current floor, depending on current lift direction.
           .filter(x -> lift.isMovingUp() ? x > lift.getCurrentFloor() : x < lift.getCurrentFloor())
@@ -153,7 +153,7 @@ public class LiftControlSystem {
     // Defining the closest floor where the lift should take passengers
     if(lift.isMovingUp() && !upList.isEmpty())
       nextFloorToEnter = upList.stream()
-          .mapToInt(x -> x.getStartingFloor())
+          .mapToInt(x -> x.startingFloor())
           .filter(x -> lift.isFull() ?  x > lift.getCurrentFloor() :
                                         x >= lift.getCurrentFloor()
           )
@@ -162,7 +162,7 @@ public class LiftControlSystem {
 
     if(!lift.isMovingUp() && !downList.isEmpty())
       nextFloorToEnter = downList.stream()
-          .mapToInt(x -> x.getStartingFloor())
+          .mapToInt(x -> x.startingFloor())
           .filter(x -> lift.isFull() ?  x < lift.getCurrentFloor() :
                                         x <= lift.getCurrentFloor()
           )

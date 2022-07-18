@@ -1,16 +1,6 @@
 package chuistov;
 
-
-
-// TODO:
-//  1. Get rid of movingUp.
-//  2. Refactor class to record (let toString be canonical).
-//  3. After replacing the class with the record, replace getters with record access method invocations (in other classes).
-
-public class Passenger {
-  private final int startingFloor;
-  private final int targetFloor;
-  private final boolean movingUp;
+record Passenger (int startingFloor, int targetFloor) {
 
   /**
    * @throws IllegalArgumentException if starting floor
@@ -25,27 +15,13 @@ public class Passenger {
   public Passenger(int startingFloor, int targetFloor) {
     this.startingFloor = startingFloor;
     this.targetFloor = targetFloor;
-    int floorDifference = targetFloor - startingFloor;
-    if(floorDifference == 0)
+    if(targetFloor == startingFloor)
       throw new IllegalArgumentException("Starting floor and target floor must be different");
-    this.movingUp = (floorDifference > 0);
-  }
-
-  public boolean isMovingUp() {
-    return movingUp;
-  }
-
-  public int getStartingFloor() {
-    return startingFloor;
-  }
-
-  public int getTargetFloor() {
-    return targetFloor;
   }
 
   @Override
   public String toString() {
-    return ( movingUp ? "Up" : "Down" ) +
+    return ( targetFloor > startingFloor ? "Up" : "Down" ) +
         " from " + startingFloor +
         " to " + targetFloor;
   }
